@@ -1,11 +1,25 @@
 <script>
+  import { onMount } from "svelte";
+
     let inputValue = "";
     let todos = [];
     let editingIndex = null;
 
+    onMount(() => {
+        const saved = localStorage.getItem("todos");
+        if (saved) {
+            todos = JSON.parse(saved);
+        }
+    });
+
+    function saveTodos() {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }
+
     function AddTodo() {
         if (inputValue.trim() !== "") {
             todos = [...todos, inputValue];
+            saveTodos();
             inputValue = ""; // reset après ajout
         }
     }
@@ -13,6 +27,7 @@
     function RemoveTodo(index) {
         todos.splice(index, 1)
         todos = [...todos]
+        saveTodos()
     }
 
     function startEdit(index) {
@@ -23,6 +38,7 @@
         todos[index] = e.target.value; // on modifie directement la valeur
         todos = [...todos];            // réassigner pour réactivité
         editingIndex = null;
+        saveTodos()
     }
 </script>
   
