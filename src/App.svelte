@@ -1,12 +1,14 @@
 <script>
-  import AddTodo from './lib/Search.svelte'
+  import { todos } from "./lib/store.js";
+  import CreateTodo from "./lib/CreateTodo.svelte";
 </script>
 
 <main>
-  <div class="card">
-    <AddTodo />
-  </div>
-</main>
+  <CreateTodo />
 
-<style>
-</style>
+  <ul>
+    {#each $todos as todo, index}
+      <li><a href="{todo}">{todo}</a></li>
+    {/each}
+</ul>
+</main>
