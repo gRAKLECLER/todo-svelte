@@ -1,72 +1,61 @@
 <script>
-  import { onMount } from "svelte";
-
+    export let items = []; // on reçoit les items de la todo sélectionnée
     let inputValue = "";
-    let todos = [];
     let editingIndex = null;
-
-    onMount(() => {
-        const saved = localStorage.getItem("todos");
-        if (saved) {
-            todos = JSON.parse(saved);
-        }
-    });
-
-    function saveTodos() {
-        localStorage.setItem("todos", JSON.stringify(todos));
-    }
-
-    function AddTodo() {
-        if (inputValue.trim() !== "") {
-            todos = [...todos, inputValue];
-            saveTodos();
-            inputValue = ""; // reset après ajout
-        }
-    }
-
-    function RemoveTodo(index) {
-        todos.splice(index, 1)
-        todos = [...todos]
-        saveTodos()
-    }
-
-    function startEdit(index) {
-        editingIndex = index;
-    }
-
-    function CancelEdit(index, e) {
-        todos[index] = e.target.value; // on modifie directement la valeur
-        todos = [...todos];            // réassigner pour réactivité
-        editingIndex = null;
-        saveTodos()
-    }
-</script>
   
-<div>
-    <input name="search" bind:value={inputValue} on:keydown={(e) => e.key === 'Enter' && AddTodo()}/>
-    <button on:click={AddTodo}>add todo</button>
-</div>
-
-<ul>
-    {#each todos as todo, index}
-        <li>
-            {#if editingIndex === index}
-                <input 
-                    bind:value={todos[index]} 
-                    on:blur={(e) => CancelEdit(index, e)} 
-                    on:keydown={(e) => e.key === 'Enter' && CancelEdit(index, e)}
-                    autofocus
-                />
-            {:else}
-                <a class="todo" on:click={() => startEdit(index)}>{todo}</a>
-            {/if}
-            <button on:click={() => RemoveTodo(index)}>remove</button>
-        </li>
-    {/each}
-</ul>
-
-<style>
-    .todo {
-        cursor: pointer;
+    function AddTodo() {
+      if (inputValue.trim() !== "") {
+        items = [...items, inputValue];
+        inputValue = "";
+      }
     }
-</style>
+  
+    function RemoveTodo(index) {
+      items.splice(index, 1);
+      items = [...items];
+    }
+  
+    function startEdit(index) {
+      editingIndex = index;
+    }
+  
+    function CancelEdit(index, e) {
+      items[index] = e.target.value;
+      items = [...items];
+      editingIndex = null;
+    }
+  </script>
+  
+  <div>
+    <input 
+      placeholder="Nouvel item"
+      bind:value={inputValue} 
+      on:keydown={(e) => e.key === 'Enter' && AddTodo()}
+    />
+    <button on:click={AddTodo}>add todo</button>
+  </div>
+  
+  <ul>
+    {#each items as item, index}
+      <li>
+        {#if editingIndex === index}
+          <input 
+            bind:value={items[index]} 
+            on:blur={(e) => CancelEdit(index, e)} 
+            on:keydown={(e) => e.key === 'Enter' && CancelEdit(index, e)}
+            autofocus
+          />
+        {:else}
+          <a class="todo" on:click={() => startEdit(index)}>{item}</a>
+        {/if}
+        <button on:click={() => RemoveTodo(index)}>remove</button>
+      </li>
+    {/each}
+  </ul>
+  
+  <style>
+    .todo {
+      cursor: pointer;
+    }
+  </style>
+  

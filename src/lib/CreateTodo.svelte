@@ -1,7 +1,8 @@
 <script>
     import Modal from "./Modal.svelte";
-    import { todos } from "./store.js";
+    import { createEventDispatcher } from "svelte";
   
+    const dispatch = createEventDispatcher();
     let showModal = false;
     let title = "";
   
@@ -15,7 +16,7 @@
   
     function createTodo() {
       if (title.trim() !== "") {
-        todos.update(list => [...list, title]); // ✅ ajoute dynamiquement
+        dispatch("create", title); // ✅ envoie le titre au parent
         title = "";
       }
       closeModal();
@@ -31,4 +32,5 @@
       <button on:click={closeModal}>Annuler</button>
       <button on:click={createTodo}>Créer</button>
     </div>
-  </Modal>  
+  </Modal>
+  
